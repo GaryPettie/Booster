@@ -21,7 +21,7 @@ public class Environment : MonoBehaviour {
 			if (otherSpeed > impactThreshold) {
 				float damage = otherSpeed * damageMultiplier;
 				(damageableComponent as IDamageable).TakeDamage(damage);
-				Debug.Log(other.gameObject.GetComponent<Player>().currentHealth);
+				Debug.Log(other.gameObject.GetComponent<Rocket>().currentHealth);
 			}
 		}
 	}
