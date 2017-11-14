@@ -14,13 +14,18 @@ public class Rocket : MonoBehaviour, IDamageable {
 	[Header ("Health:")]
 	[SerializeField] float maxHealth = 100f;
 	[SerializeField] float maxShield = 100f;
+	[SerializeField] int lives = 3;
 
+	enum State { ALIVE, RESETTING, DYING, TRANSCENDING }
+
+	State state	= State.ALIVE;
 	public float currentHealth { get; private set; }
 	public float currentFuel { get; private set; }
 
 	Rigidbody rigidbody;
 	RigidbodyConstraints rbConstraints;
 	AudioSource audioSource;
+
 	float fuelComsumption;
 	float vertical;
 	float horizontal;
@@ -34,8 +39,12 @@ public class Rocket : MonoBehaviour, IDamageable {
 	}
 
 	void FixedUpdate () {
-		Thrust();
-		Rotate();
+		if (state == State.ALIVE) {
+			//BUG Thrust audio continues after death
+			Thrust();
+			Rotate();
+		}
+		
 	}
 
 	void Thrust () {
@@ -70,11 +79,12 @@ public class Rocket : MonoBehaviour, IDamageable {
 		}
 	}
 
-	public void TakeDamage (float damage) {
+	public void TakeDamage (float damage) {		
 		//Destroys ship quicker when out of fuel
 		if (currentFuel <= 0) {
 			damage *= 10;
 		}
+
 		currentHealth = Mathf.Clamp(currentHealth - damage, 0, maxHealth);
 		if (currentHealth <= 0) {
 			Die();
@@ -82,14 +92,13 @@ public class Rocket : MonoBehaviour, IDamageable {
 	}
 	
 	public void Die () {
-		Destroy(this.gameObject);
+		if (lives > 0) {
+			state = State.RESETTING;
+			//TODO Write code to reset ship at launchpad
+		}
+		else {
+			state = State.DYING;
+			//TODO Write code to kill the player and reload the game
+		}
 	}
-
-	
-
-
-
-	
-
-
 }
