@@ -23,9 +23,8 @@ public class Grapple : MonoBehaviour {
 	}
 
 	void Update () {
+		DrawBeam();
 		if (CrossPlatformInputManager.GetButtonUp("Fire1")) {
-			hasCargo = false;
-			Debug.Log("Here");
 			if (hasCargo) {
 				//dropPoint.transform.position = transform.position;
 				pickupSJ.connectedBody = dropPoint;
@@ -33,8 +32,8 @@ public class Grapple : MonoBehaviour {
 				pickupSJ.connectedAnchor = Vector3.zero;
 				dropPoint = null;
 			}
+			hasCargo = false;
 		}
-		DrawBeam();
 	}
 
 	void OnTriggerStay (Collider other) {
@@ -43,13 +42,12 @@ public class Grapple : MonoBehaviour {
 			if (pickup) {
 				dropPoint = pickup.transform.parent.GetComponent<Rigidbody>();
 				pickupSJ = pickup.GetComponent<SpringJoint>();
-				pickupSJ.autoConfigureConnectedAnchor = false;
-				pickupSJ.connectedAnchor = pickupConnectedAnchor;
-				pickupSJ.connectedBody = rigidbody;
 				hasCargo = true;
-				//TODO Add LineRenderer and Particles to show link between grapple and pickup.
-				
-				//TODO Add particle effect to mothership to show tractor field is active. 
+				if (pickupSJ) {
+					pickupSJ.autoConfigureConnectedAnchor = false;
+					pickupSJ.connectedAnchor = pickupConnectedAnchor;
+					pickupSJ.connectedBody = rigidbody;
+				}				
 			}
 		}
 	}

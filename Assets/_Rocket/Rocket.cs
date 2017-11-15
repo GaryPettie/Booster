@@ -153,7 +153,6 @@ public class Rocket : MonoBehaviour, IDamageable {
 	}
 
 	void PlayExplosionAudio () {
-		audioSource.Stop();
 		audioSource.PlayOneShot(explosionAudio, explosionVolume);
 	}
 	#endregion

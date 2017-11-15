@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TractorBeam : MonoBehaviour {
-
+	
 	[SerializeField] float pullSpeed = 5f;
 	[SerializeField] float destroyThreshold = 0.1f;
 	[SerializeField] Vector3 offset;
-	
+	[SerializeField] GameObject[] lightsPrefabs;
+	[SerializeField] ParticleSystem particlesPrefab;
+
+
 	ParticleSystem particleSystem;
-	MeshRenderer meshRenderer;
+	List<GameObject> lights = new List<GameObject>();
 	Grapple grapple;
 	Pickup pickup;
 	SpringJoint pickupSJ;
@@ -18,18 +21,27 @@ public class TractorBeam : MonoBehaviour {
 
 	void Start () {
 		grapple = FindObjectOfType<Grapple>();
-		particleSystem = GetComponent<ParticleSystem>();
-		meshRenderer = GetComponent<MeshRenderer>();
+		particleSystem = Instantiate(particlesPrefab, transform.position, Quaternion.identity, transform);
+		for (int i = 0; i < lightsPrefabs.Length; i++) {
+			GameObject light = Instantiate(lightsPrefabs[i], lightsPrefabs[i].transform.position, lightsPrefabs[i].transform.rotation, transform);
+			lights.Add(light);
+			light.SetActive(false);
+		}
 	}
 
 	void Update () {
-		if (grapple.hasCargo || pickup != null) {
+		if ((grapple.hasCargo || pickup != null)) {
 			particleSystem.Play();
-			meshRenderer.enabled = true;
+			foreach (GameObject light in lights) {
+				light.SetActive(true);
+			}
+
 		}
 		else {
 			particleSystem.Stop();
-			meshRenderer.enabled = false;
+			foreach (GameObject light in lights) {
+				light.SetActive(false);
+			}
 		}
 	}
 
@@ -39,7 +51,6 @@ public class TractorBeam : MonoBehaviour {
 		if (pickup) {
 			pickupSJ = pickup.GetComponent<SpringJoint>();
 			pickupRB = pickup.GetComponent<Rigidbody>();
-			grapple.hasCargo = false;
 			pickupRB.useGravity = false;
 			pickupRB.isKinematic = true;
 			pickupSJ.breakForce = 0;
@@ -52,6 +63,7 @@ public class TractorBeam : MonoBehaviour {
 	void OnTriggerStay (Collider other) {
 		Pickup pickup = other.GetComponent<Pickup>();
 		if (pickup) {
+			grapple.hasCargo = false;
 			Vector3 distance = (transform.position + offset) - pickup.transform.position;
 			pickup.transform.position = Vector3.MoveTowards(pickup.transform.position, transform.position + offset, pullSpeed * Time.deltaTime);
 			if (distance.magnitude < destroyThreshold) {
