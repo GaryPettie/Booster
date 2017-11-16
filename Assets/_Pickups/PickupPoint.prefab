@@ -99,7 +99,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1052390021568406}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -30.2, y: -19.1, z: 0}
+  m_LocalPosition: {x: 30.1, y: -33.9, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4236464599721458}
@@ -199,7 +199,7 @@ Light:
   serializedVersion: 8
   m_Type: 2
   m_Color: {r: 0, g: 1, b: 1, a: 1}
-  m_Intensity: 3
+  m_Intensity: 5
   m_Range: 3
   m_SpotAngle: 30
   m_CookieSize: 10
@@ -270,7 +270,7 @@ SpringJoint:
   m_ConnectedBody: {fileID: 0}
   m_Anchor: {x: 0, y: 0.5, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -30.2, y: -18.6, z: 0}
+  m_ConnectedAnchor: {x: 30.1, y: -33.4, z: 0}
   serializedVersion: 2
   m_Spring: 100
   m_Damper: 1000

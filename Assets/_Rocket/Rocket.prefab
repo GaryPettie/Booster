@@ -902,7 +902,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   thrustForce: 2000
-  rotationSpeed: 150
+  rotationSpeed: 200
   maxFuel: 100
   fuelBurnMultiplier: 1
   maxHealth: 100
@@ -911,7 +911,7 @@ MonoBehaviour:
   engineAudio: {fileID: 8300000, guid: 3edb85de2355c4748bc8c2148503a4fa, type: 3}
   engineVolume: 0.25
   explosionAudio: {fileID: 8300000, guid: 81e2c9d1fd059dc4b8dbdcfe861f7538, type: 3}
-  explosionVolume: 0.6
+  explosionVolume: 0.5
   exhaustParticlesPrefab: {fileID: 198626962620368400, guid: 04e3d78303278f54e891dacf22d5f9b3,
     type: 2}
 --- !u!114 &114998685013252514

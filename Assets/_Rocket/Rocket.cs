@@ -26,6 +26,7 @@ public class Rocket : MonoBehaviour, IDamageable {
 	[Header ("Visual:")]
 	[SerializeField] ParticleSystem exhaustParticlesPrefab;
 
+	#region Private Variables
 	enum State { ALIVE, RESETTING, DYING, TRANSCENDING }
 
 	State state;
@@ -43,6 +44,7 @@ public class Rocket : MonoBehaviour, IDamageable {
 	float vertical;
 	float horizontal;
 	bool isThrusting = false;
+	#endregion
 
 	#region Game Loop
 	void Start () {
