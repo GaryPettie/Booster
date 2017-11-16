@@ -20,6 +20,38 @@ public class TractorBeam : MonoBehaviour {
 
 
 	void Start () {
+		Setup();
+	}
+
+	void Update () {
+		if ((grapple.hasCargo || pickup != null)) {
+			BeamOn(true);
+		}
+		else {
+			BeamOn(false);
+		}
+	}
+
+	//Captures the pickup
+	void OnTriggerEnter (Collider other) {
+		pickup = other.GetComponent<Pickup>();
+		if (pickup) {
+			GrabPickup();
+		}
+
+	}
+
+	//Moves the pickup a location inside the mothership
+	void OnTriggerStay (Collider other) {
+		pickup = other.GetComponent<Pickup>();
+		if (pickup) {
+			grapple.hasCargo = false;
+			PullPickup();
+		}
+		//TODO Score points / store collected item;
+	}
+
+	void Setup () {
 		grapple = FindObjectOfType<Grapple>();
 		particleSystem = Instantiate(particlesPrefab, transform.position, Quaternion.identity, transform);
 		for (int i = 0; i < lightsPrefabs.Length; i++) {
@@ -29,49 +61,37 @@ public class TractorBeam : MonoBehaviour {
 		}
 	}
 
-	void Update () {
-		if ((grapple.hasCargo || pickup != null)) {
+	//BUG Effects sometimes switch off whilst pulling in the pickup.  
+	void BeamOn (bool isOn) {
+		if (isOn) {
 			particleSystem.Play();
-			foreach (GameObject light in lights) {
-				light.SetActive(true);
-			}
-
 		}
 		else {
 			particleSystem.Stop();
-			foreach (GameObject light in lights) {
-				light.SetActive(false);
-			}
+		}
+		foreach (GameObject light in lights) {
+			light.SetActive(isOn);
 		}
 	}
 
-	//Captures the pickup
-	void OnTriggerEnter (Collider other) {
-		pickup = other.GetComponent<Pickup>();
-		if (pickup) {
-			pickupSJ = pickup.GetComponent<SpringJoint>();
-			pickupRB = pickup.GetComponent<Rigidbody>();
-			pickupRB.useGravity = false;
-			pickupRB.isKinematic = true;
-			pickupSJ.breakForce = 0;
-			//TODO Add LineRenderer and Particles to show link between grapple and pickup.
-		}
-
+	void GrabPickup () {
+		pickupSJ = pickup.GetComponent<SpringJoint>();
+		pickupRB = pickup.GetComponent<Rigidbody>();
+		pickupRB.useGravity = false;
+		pickupRB.isKinematic = true;
+		pickupSJ.breakForce = 0;
 	}
 
-	//Moves the pickup a location inside the mothership
-	void OnTriggerStay (Collider other) {
-		Pickup pickup = other.GetComponent<Pickup>();
-		if (pickup) {
-			grapple.hasCargo = false;
-			Vector3 distance = (transform.position + offset) - pickup.transform.position;
-			pickup.transform.position = Vector3.MoveTowards(pickup.transform.position, transform.position + offset, pullSpeed * Time.deltaTime);
-			if (distance.magnitude < destroyThreshold) {
-				Destroy(pickup.gameObject);
-				pickup = null;
-			}
-
+	void PullPickup () {
+		Vector3 distance = (transform.position + offset) - pickup.transform.position;
+		pickup.transform.position = Vector3.MoveTowards(pickup.transform.position, transform.position + offset, pullSpeed * Time.deltaTime);
+		if (distance.magnitude < destroyThreshold) {
+			DestroyPickup();
 		}
-		//TODO Destroy pickup GO and Score points / store collected item;
+	}
+
+	void DestroyPickup () {
+		Destroy(pickup.gameObject);
+		pickup = null;
 	}
 }

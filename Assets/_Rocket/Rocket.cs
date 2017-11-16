@@ -24,8 +24,7 @@ public class Rocket : MonoBehaviour, IDamageable {
 	[SerializeField] float explosionVolume;
 
 	[Header ("Visual:")]
-	[SerializeField]
-	ParticleSystem exhaustParticlesPrefab;
+	[SerializeField] ParticleSystem exhaustParticlesPrefab;
 
 	enum State { ALIVE, RESETTING, DYING, TRANSCENDING }
 
@@ -45,23 +44,28 @@ public class Rocket : MonoBehaviour, IDamageable {
 	float horizontal;
 	bool isThrusting = false;
 
-
+	#region Game Loop
 	void Start () {
+		Setup();
+	}
+
+	void FixedUpdate () {
+		if (state == State.ALIVE) {
+			RespondToThrust();
+			RespondToRotate();
+		}
+	}
+	#endregion	
+
+	#region Setup & Reset
+	void Setup () {
 		rigidbody = GetComponent<Rigidbody>();
 		rbConstraints = rigidbody.constraints;
 		audioSource = GetComponent<AudioSource>();
 		ResetRocket();
 		exhaustParticles = Instantiate(exhaustParticlesPrefab);
 		exhaustParticles.transform.SetParent(this.transform);
-	}
 
-	void FixedUpdate () {
-		if (state == State.ALIVE) {
-			//BUG Thrust audio continues after death
-			RespondToThrust();
-			RespondToRotate();
-		}
-		
 	}
 
 	void ResetRocket () {
@@ -69,6 +73,7 @@ public class Rocket : MonoBehaviour, IDamageable {
 		currentFuel = maxFuel;
 		currentHealth = maxHealth;
 	}
+	#endregion
 
 	#region Movement
 	void RespondToThrust () {
@@ -132,7 +137,7 @@ public class Rocket : MonoBehaviour, IDamageable {
 		}
 		else {
 			state = State.DYING;
-			//TODO Write code to kill the player and reload the game
+			//TODO Write code to reload the game
 			PlayExplosionAudio();
 			Destroy(gameObject);
 		}
@@ -153,7 +158,18 @@ public class Rocket : MonoBehaviour, IDamageable {
 	}
 
 	void PlayExplosionAudio () {
-		audioSource.PlayOneShot(explosionAudio, explosionVolume);
+		Play2DClipAtPoint(explosionAudio, transform.position, explosionVolume);
+	}
+
+	void Play2DClipAtPoint (AudioClip clip, Vector3 position, float volume) {
+		GameObject temp = new GameObject("PointAudioClip");
+		temp.transform.position = position;
+		AudioSource tempAudio = temp.AddComponent<AudioSource>();
+		tempAudio.clip = clip;
+		tempAudio.volume = volume;
+		tempAudio.spatialBlend = 0;
+		tempAudio.Play();
+		Destroy(temp, clip.length);
 	}
 	#endregion
 }

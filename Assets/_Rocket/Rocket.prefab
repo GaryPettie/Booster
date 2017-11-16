@@ -851,8 +851,8 @@ Light:
   serializedVersion: 8
   m_Type: 0
   m_Color: {r: 1, g: 0.8834343, b: 0.43382353, a: 1}
-  m_Intensity: 2
-  m_Range: 20
+  m_Intensity: 3
+  m_Range: 25
   m_SpotAngle: 45
   m_CookieSize: 10
   m_Shadows:
@@ -901,7 +901,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b518b55e94ac5a4429a488fd7faa0eaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  thrustForce: 1500
+  thrustForce: 2000
   rotationSpeed: 150
   maxFuel: 100
   fuelBurnMultiplier: 1
@@ -911,7 +911,7 @@ MonoBehaviour:
   engineAudio: {fileID: 8300000, guid: 3edb85de2355c4748bc8c2148503a4fa, type: 3}
   engineVolume: 0.25
   explosionAudio: {fileID: 8300000, guid: 81e2c9d1fd059dc4b8dbdcfe861f7538, type: 3}
-  explosionVolume: 0.5
+  explosionVolume: 0.6
   exhaustParticlesPrefab: {fileID: 198626962620368400, guid: 04e3d78303278f54e891dacf22d5f9b3,
     type: 2}
 --- !u!114 &114998685013252514
@@ -953,7 +953,7 @@ LineRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 2100000, guid: 71f0e40a7337a434b87d548adc2807d0, type: 2}
+  - {fileID: 2100000, guid: 06649f95982e5c646a4ff86a37dec2ff, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1020,8 +1020,8 @@ LineRenderer:
       m_Mode: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
-    numCornerVertices: 0
-    numCapVertices: 0
+    numCornerVertices: 2
+    numCapVertices: 2
     alignment: 0
     textureMode: 0
     generateLightingData: 0

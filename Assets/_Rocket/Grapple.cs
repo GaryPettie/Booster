@@ -26,11 +26,7 @@ public class Grapple : MonoBehaviour {
 		DrawBeam();
 		if (CrossPlatformInputManager.GetButtonUp("Fire1")) {
 			if (hasCargo) {
-				//dropPoint.transform.position = transform.position;
-				pickupSJ.connectedBody = dropPoint;
-				pickupSJ.autoConfigureConnectedAnchor = true;
-				pickupSJ.connectedAnchor = Vector3.zero;
-				dropPoint = null;
+				ReleasePickup();
 			}
 			hasCargo = false;
 		}
@@ -40,16 +36,27 @@ public class Grapple : MonoBehaviour {
 		if (!hasCargo && CrossPlatformInputManager.GetButton("Fire1")) {
 			pickup = other.GetComponent<Pickup>();
 			if (pickup) {
-				dropPoint = pickup.transform.parent.GetComponent<Rigidbody>();
 				pickupSJ = pickup.GetComponent<SpringJoint>();
-				hasCargo = true;
 				if (pickupSJ) {
-					pickupSJ.autoConfigureConnectedAnchor = false;
-					pickupSJ.connectedAnchor = pickupConnectedAnchor;
-					pickupSJ.connectedBody = rigidbody;
+					GrabPickup();
 				}				
 			}
 		}
+	}
+
+	void GrabPickup () {
+		dropPoint = pickup.transform.parent.GetComponent<Rigidbody>();
+		pickupSJ.autoConfigureConnectedAnchor = false;
+		pickupSJ.connectedAnchor = pickupConnectedAnchor;
+		pickupSJ.connectedBody = rigidbody;
+		hasCargo = true;
+	}
+
+	void ReleasePickup () {
+		pickupSJ.connectedBody = dropPoint;
+		pickupSJ.autoConfigureConnectedAnchor = true;
+		pickupSJ.connectedAnchor = Vector3.zero;
+		dropPoint = null;
 	}
 
 	void DrawBeam () {
