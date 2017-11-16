@@ -12,7 +12,12 @@ public class DoorTrigger : MonoBehaviour {
 
 	void OnTriggerEnter (Collider other) {
 		if (!other.GetComponent<Grapple>() && other.GetComponentInParent<Rocket>()) {
-			anim.SetTrigger("isTriggered");
+			anim.SetBool("isOpen", true);
+		}
+	}
+	void OnTriggerExit (Collider other) {
+		if (!other.GetComponent<Grapple>() && other.GetComponentInParent<Rocket>()) {
+			anim.SetBool("isOpen", false);
 		}
 	}
 }

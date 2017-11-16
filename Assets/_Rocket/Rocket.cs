@@ -27,9 +27,8 @@ public class Rocket : MonoBehaviour, IDamageable {
 	[SerializeField] ParticleSystem exhaustParticlesPrefab;
 
 	#region Private Variables
-	enum State { ALIVE, RESETTING, DYING, TRANSCENDING }
+	bool isTransitioning = false;
 
-	State state;
 	public float currentHealth { get; private set; }
 	public float currentFuel { get; private set; }
 	Vector3 startLocation;
@@ -37,13 +36,13 @@ public class Rocket : MonoBehaviour, IDamageable {
 
 
 	Rigidbody rigidbody;
-	RigidbodyConstraints rbConstraints;
 	AudioSource audioSource;
 
 	float fuelComsumption;
 	float vertical;
 	float horizontal;
 	bool isThrusting = false;
+	bool explosionCalled = false;
 	#endregion
 
 	#region Game Loop
@@ -52,7 +51,7 @@ public class Rocket : MonoBehaviour, IDamageable {
 	}
 
 	void FixedUpdate () {
-		if (state == State.ALIVE) {
+		if (!isTransitioning) {
 			RespondToThrust();
 			RespondToRotate();
 		}
@@ -62,16 +61,14 @@ public class Rocket : MonoBehaviour, IDamageable {
 	#region Setup & Reset
 	void Setup () {
 		rigidbody = GetComponent<Rigidbody>();
-		rbConstraints = rigidbody.constraints;
 		audioSource = GetComponent<AudioSource>();
 		ResetRocket();
 		exhaustParticles = Instantiate(exhaustParticlesPrefab);
 		exhaustParticles.transform.SetParent(this.transform);
-
 	}
 
 	void ResetRocket () {
-		state = State.ALIVE;
+		isTransitioning = false;
 		currentFuel = maxFuel;
 		currentHealth = maxHealth;
 	}
@@ -101,18 +98,15 @@ public class Rocket : MonoBehaviour, IDamageable {
 
 	void RespondToRotate () {
 		horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
+		rigidbody.angularVelocity = Vector3.zero;
 
 		if(currentFuel > 0) {
 			if (horizontal < 0f) {
-				rigidbody.freezeRotation = true;
 				transform.Rotate(Vector3.forward * rotationSpeed * Time.fixedDeltaTime);
 			}
 			if (horizontal > 0f) {
-				rigidbody.freezeRotation = true;
 				transform.Rotate(-Vector3.forward * rotationSpeed * Time.fixedDeltaTime);
 			}
-			rigidbody.freezeRotation = false;
-			rigidbody.constraints = rbConstraints;
 		}
 	}
 	#endregion
@@ -132,15 +126,18 @@ public class Rocket : MonoBehaviour, IDamageable {
 	}
 	
 	public void Die () {
+		isTransitioning = true;
 		if (lives > 0) {
-			state = State.RESETTING;
 			ResetRocket();
 			//TODO Write code to reset ship at launchpad
 		}
 		else {
-			state = State.DYING;
 			//TODO Write code to reload the game
-			PlayExplosionAudio();
+			bool explosionCalled = false;
+			//BUG Explosion sound can be called multiple times.
+			if (!explosionCalled) {
+				PlayExplosionAudio();
+			}
 			Destroy(gameObject);
 		}
 	}
@@ -160,18 +157,7 @@ public class Rocket : MonoBehaviour, IDamageable {
 	}
 
 	void PlayExplosionAudio () {
-		Play2DClipAtPoint(explosionAudio, transform.position, explosionVolume);
-	}
-
-	void Play2DClipAtPoint (AudioClip clip, Vector3 position, float volume) {
-		GameObject temp = new GameObject("PointAudioClip");
-		temp.transform.position = position;
-		AudioSource tempAudio = temp.AddComponent<AudioSource>();
-		tempAudio.clip = clip;
-		tempAudio.volume = volume;
-		tempAudio.spatialBlend = 0;
-		tempAudio.Play();
-		Destroy(temp, clip.length);
+		AudioManager.Play2DClipAtPoint(explosionAudio, transform.position, explosionVolume);
 	}
 	#endregion
 }
