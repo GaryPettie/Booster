@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TractorBeam : MonoBehaviour {
 	
@@ -10,17 +11,26 @@ public class TractorBeam : MonoBehaviour {
 	[SerializeField] GameObject[] lightsPrefabs;
 	[SerializeField] ParticleSystem particlesPrefab;
 
+	//TODO This stuff needs to move with the Storage code:
+	#region
+	[SerializeField] Text partsText;
+	[SerializeField] Text cashText;
+	Rocket rocket;
+	#endregion
 
 	ParticleSystem particleSystem;
 	List<GameObject> lights = new List<GameObject>();
 	Grapple grapple;
 	Pickup pickup;
-	SpringJoint pickupSJ;
-	Rigidbody pickupRB;
+
+	
 
 
 	void Start () {
 		Setup();
+
+		//TODO refactor this method out of the class
+		ClearUI();
 	}
 
 	void Update () {
@@ -75,8 +85,10 @@ public class TractorBeam : MonoBehaviour {
 	}
 
 	void GrabPickup () {
-		pickupSJ = pickup.GetComponent<SpringJoint>();
-		pickupRB = pickup.GetComponent<Rigidbody>();
+		SpringJoint pickupSJ = pickup.GetComponent<SpringJoint>();
+		Rigidbody pickupRB = pickup.GetComponent<Rigidbody>();
+		Collider pickupCol = pickup.GetComponent<Collider>();
+		pickupCol.isTrigger = true;
 		pickupRB.useGravity = false;
 		pickupRB.isKinematic = true;
 		pickupSJ.breakForce = 0;
@@ -85,8 +97,35 @@ public class TractorBeam : MonoBehaviour {
 	void PullPickup () {
 		Vector3 distance = (transform.position + offset) - pickup.transform.position;
 		pickup.transform.position = Vector3.MoveTowards(pickup.transform.position, transform.position + offset, pullSpeed * Time.deltaTime);
-		if (distance.magnitude < destroyThreshold) {
+		if (distance.magnitude <= destroyThreshold) {
+			StorePickup();
 			DestroyPickup();
+		}
+	}
+
+	//TODO This probably shouldn't sit in this class...
+	void ClearUI () {
+		cashText.text = "Cash: \u0243 0";
+		partsText.text = "Parts Collected: 0";
+	}
+
+	void StorePickup () {
+		rocket = FindObjectOfType<Rocket>().GetComponent<Rocket>();
+		switch (pickup.pickupType) {
+			case Pickup.PickupType.FUEL:
+				rocket.AddFuel(pickup.value);
+				break;
+			case Pickup.PickupType.MONEY:
+				rocket.AddCash(pickup.value);
+				cashText.text = "Cash: \u0243 " + rocket.currentCash;
+				break;
+			case Pickup.PickupType.PART:
+				rocket.AddPart();
+				partsText.text = "Parts Collected: " + rocket.currentParts;
+				break;
+			default:
+				Debug.LogError("Unrecognised pickup type");
+				break;
 		}
 	}
 

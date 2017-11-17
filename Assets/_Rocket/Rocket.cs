@@ -25,12 +25,15 @@ public class Rocket : MonoBehaviour, IDamageable {
 
 	[Header ("Visual:")]
 	[SerializeField] ParticleSystem exhaustParticlesPrefab;
+	[SerializeField] Vector3 exhaustOffset;
 
 	#region Private Variables
 	bool isTransitioning = false;
 
 	public float currentHealth { get; private set; }
 	public float currentFuel { get; private set; }
+	public float currentParts { get; private set; }
+	public float currentCash { get; private set; }
 	Vector3 startLocation;
 	ParticleSystem exhaustParticles;
 
@@ -63,8 +66,7 @@ public class Rocket : MonoBehaviour, IDamageable {
 		rigidbody = GetComponent<Rigidbody>();
 		audioSource = GetComponent<AudioSource>();
 		ResetRocket();
-		exhaustParticles = Instantiate(exhaustParticlesPrefab);
-		exhaustParticles.transform.SetParent(this.transform);
+		exhaustParticles = Instantiate(exhaustParticlesPrefab, transform.position + exhaustOffset, exhaustParticlesPrefab.transform.rotation, transform);
 	}
 
 	void ResetRocket () {
@@ -94,6 +96,10 @@ public class Rocket : MonoBehaviour, IDamageable {
 	void BurnFuel () {
 		fuelComsumption = fuelBurnMultiplier * Time.deltaTime;
 		currentFuel = Mathf.Clamp(currentFuel - fuelComsumption, 0, maxFuel);
+	}
+
+	public void AddFuel (float anAmount) {
+		currentFuel += anAmount;
 	}
 
 	void RespondToRotate () {
@@ -158,6 +164,16 @@ public class Rocket : MonoBehaviour, IDamageable {
 
 	void PlayExplosionAudio () {
 		AudioManager.Play2DClipAtPoint(explosionAudio, transform.position, explosionVolume);
+	}
+	#endregion
+
+	#region Stuff to refactor
+	public void AddPart () {
+		currentParts++;
+	}
+
+	public void AddCash (float anAmount) {
+		currentCash += anAmount;
 	}
 	#endregion
 }
