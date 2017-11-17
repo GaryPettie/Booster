@@ -6,14 +6,7 @@ public class Environment : MonoBehaviour {
 
 	[SerializeField] float impactThreshold;
 	[SerializeField] float damageMultiplier;
-
-
-	Collider col;
-
-	void Start () {
-		col = GetComponentInChildren<Collider>();
-	}
-
+	
 	void OnCollisionEnter (Collision other) {
 		Component damageableComponent = other.gameObject.GetComponent(typeof(IDamageable));
 		if (damageableComponent) {

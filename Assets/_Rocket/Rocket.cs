@@ -44,8 +44,6 @@ public class Rocket : MonoBehaviour, IDamageable {
 	float fuelComsumption;
 	float vertical;
 	float horizontal;
-	bool isThrusting = false;
-	bool explosionCalled = false;
 	#endregion
 
 	#region Game Loop
