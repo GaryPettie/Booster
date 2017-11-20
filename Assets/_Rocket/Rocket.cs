@@ -9,11 +9,11 @@ public class Rocket : MonoBehaviour, IDamageable {
 	[SerializeField] float thrustForce = 1000;
 	[SerializeField] float rotationSpeed = 150;
 	[SerializeField] float maxFuel = 500;
-	[SerializeField] float fuelBurnMultiplier = 1;
+	[SerializeField] float fuelBurnMultiplier = 1f;
 
 	[Header ("Health:")]
 	[SerializeField] float maxHealth = 100f;
-	[SerializeField] float maxShield = 100f;
+	[SerializeField] float shieldMultiplier = 1f;
 	[SerializeField] int lives = 3;
 
 	[Header ("Audio:")]
@@ -28,7 +28,7 @@ public class Rocket : MonoBehaviour, IDamageable {
 	[SerializeField] Vector3 exhaustOffset;
 
 	#region Private Variables
-	bool isTransitioning = false;
+	public bool isTransitioning = false;
 
 	public float currentHealth { get; private set; }
 	public float currentFuel { get; private set; }
@@ -50,19 +50,13 @@ public class Rocket : MonoBehaviour, IDamageable {
 	void Start () {
 		Setup();
 	}
-
-	void FixedUpdate () {
-		if (!isTransitioning) {
-			RespondToThrust();
-			RespondToRotate();
-		}
-	}
 	#endregion	
 
 	#region Setup & Reset
 	void Setup () {
 		rigidbody = GetComponent<Rigidbody>();
 		audioSource = GetComponent<AudioSource>();
+		startLocation = transform.position;
 		ResetRocket();
 		exhaustParticles = Instantiate(exhaustParticlesPrefab, transform.position + exhaustOffset, exhaustParticlesPrefab.transform.rotation, transform);
 	}
@@ -71,59 +65,67 @@ public class Rocket : MonoBehaviour, IDamageable {
 		isTransitioning = false;
 		currentFuel = maxFuel;
 		currentHealth = maxHealth;
+		transform.position = startLocation;
+		transform.rotation = Quaternion.identity;
+		rigidbody.velocity = Vector3.zero;
+
 	}
 	#endregion
 
-	#region Movement
-	void RespondToThrust () {
-		vertical = CrossPlatformInputManager.GetAxis("Vertical");
-		if (vertical > 0f && currentFuel > 0) {
-			ApplyThrust();
-			BurnFuel();
-			PlayEngineEffects();
-		}
-		else {
-			StopEngineEffects();
-		}
+	#region Engine Management (Movement)
+	public float GetCurrentFuel () {
+		return currentFuel;
 	}
 
-	void ApplyThrust () {
-		rigidbody.AddRelativeForce(Vector3.up * thrustForce * Time.fixedDeltaTime);
+	public float GetMaxFuel () {
+		return maxFuel;
 	}
 
-	void BurnFuel () {
+	public void SetMaxFuel (float anAmount) {
+		maxFuel = anAmount;
+	}
+
+	public float GetThrustForce () {
+		return thrustForce;
+	}
+
+	public void SetThrustForce (float anAmount) {
+		thrustForce = anAmount;
+	}
+	
+	public void AddFuel (float anAmount) {
+		currentFuel = Mathf.Clamp(currentFuel + anAmount, 0, maxFuel);
+	}
+
+	public void BurnFuel () {
 		fuelComsumption = fuelBurnMultiplier * Time.deltaTime;
 		currentFuel = Mathf.Clamp(currentFuel - fuelComsumption, 0, maxFuel);
 	}
 
-	public void AddFuel (float anAmount) {
-		currentFuel += anAmount;
+	public void ApplyThrust () {
+		rigidbody.AddRelativeForce(Vector3.up * thrustForce * Time.fixedDeltaTime);
 	}
 
-	void RespondToRotate () {
-		horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
+	public void ApplyRotation (Vector3 direction) {
 		rigidbody.angularVelocity = Vector3.zero;
-
-		if(currentFuel > 0) {
-			if (horizontal < 0f) {
-				transform.Rotate(Vector3.forward * rotationSpeed * Time.fixedDeltaTime);
-			}
-			if (horizontal > 0f) {
-				transform.Rotate(-Vector3.forward * rotationSpeed * Time.fixedDeltaTime);
-			}
-		}
+		transform.Rotate(direction * rotationSpeed * Time.fixedDeltaTime);
 	}
 	#endregion
 
+
 	#region Damage
+	public void SetShieldMultiplier (float anAmount) {
+		shieldMultiplier = anAmount;
+	}
+
 	public void TakeDamage (float damage) {		
 		//Destroys ship quicker when out of fuel
 		if (currentFuel <= 0) {
-			damage *= 10;
+			damage = Mathf.Infinity;
 		}
 
 		//Applies damage to the rocket
-		currentHealth = Mathf.Clamp(currentHealth - damage, 0, maxHealth);
+		currentHealth = Mathf.Clamp(currentHealth - (damage / shieldMultiplier), 0, maxHealth);
 		if (currentHealth <= 0) {
 			Die();
 		} 
@@ -131,31 +133,32 @@ public class Rocket : MonoBehaviour, IDamageable {
 	
 	public void Die () {
 		isTransitioning = true;
+
+		bool explosionCalled = false;
+		//BUG Explosion sound can be called multiple times - seems to be calsued by the old movement bug.  Not sure if this is still here.  
+		if (!explosionCalled) {
+			PlayExplosionAudio();
+		}
+
 		if (lives > 0) {
 			ResetRocket();
-			//TODO Write code to reset ship at launchpad
+			lives--;
 		}
 		else {
-			//TODO Write code to reload the game
-			bool explosionCalled = false;
-			//BUG Explosion sound can be called multiple times.
-			if (!explosionCalled) {
-				PlayExplosionAudio();
-			}
 			Destroy(gameObject);
 		}
 	}
 	#endregion
 
 	#region Effects
-	void PlayEngineEffects () {
+	public void PlayEngineEffects () {
 		if (!audioSource.isPlaying) {
 			audioSource.PlayOneShot(engineAudio, engineVolume);
 		}
 		exhaustParticles.Play();
 	}
 
-	void StopEngineEffects () {
+	public void StopEngineEffects () {
 		audioSource.Stop();
 		exhaustParticles.Stop();
 	}

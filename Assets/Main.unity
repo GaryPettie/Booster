@@ -487,12 +487,12 @@ Prefab:
     - target: {fileID: 224147269588753490, guid: 03701fa97bd0b01488c08dc91a96f7ce,
         type: 2}
       propertyPath: m_LocalPosition.x
-      value: 633
+      value: 665
       objectReference: {fileID: 0}
     - target: {fileID: 224147269588753490, guid: 03701fa97bd0b01488c08dc91a96f7ce,
         type: 2}
       propertyPath: m_LocalPosition.y
-      value: 356
+      value: 374
       objectReference: {fileID: 0}
     - target: {fileID: 224147269588753490, guid: 03701fa97bd0b01488c08dc91a96f7ce,
         type: 2}
@@ -1011,7 +1011,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 384326620}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -435.2, y: 173.90015, z: 0}
+  m_LocalPosition: {x: -467.2, y: 191.90015, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 278994404}
@@ -1163,6 +1163,19 @@ Prefab:
         type: 2}
       propertyPath: m_Intensity
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114744884764733960, guid: c608c1cd19185024c8661971f4d14965,
+        type: 2}
+      propertyPath: lives
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1859341575398832, guid: c608c1cd19185024c8661971f4d14965, type: 2}
+      propertyPath: m_Name
+      value: RocketSpotlight
+      objectReference: {fileID: 0}
+    - target: {fileID: 1675599083910744, guid: c608c1cd19185024c8661971f4d14965, type: 2}
+      propertyPath: m_Name
+      value: RocketGrapple
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c608c1cd19185024c8661971f4d14965, type: 2}
@@ -4772,6 +4785,70 @@ Transform:
   m_PrefabParentObject: {fileID: 4402975833359510, guid: 9042c1944a72fee459a94df39c23cc5e,
     type: 2}
   m_PrefabInternal: {fileID: 635956218}
+--- !u!1 &836803523 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1492643889520646, guid: c608c1cd19185024c8661971f4d14965,
+    type: 2}
+  m_PrefabInternal: {fileID: 461345950}
+--- !u!114 &836803524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 836803523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0b3b959f4b3824a86f9df8a8f6360f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasThrust: 01000000
+  EngineThrustLevels:
+  - 2000
+  - 2500
+  - 3000
+  - 3500
+  hasFuelTank: 01000000
+  TankSizeLevels:
+  - 50
+  - 100
+  - 150
+  - 200
+  hasShield: 01000000
+  ShieldLevels:
+  - 1
+  - 2
+  - 5
+  - 10
+  hasLightStrength: 01000000
+  hasLightAngle: 01000000
+  LightRangLevels:
+  - 10
+  - 15
+  - 20
+  - 30
+  LightIntensityLevels:
+  - 1
+  - 2
+  - 3
+  - 4
+  LightAngleLevels:
+  - 15
+  - 30
+  - 45
+  - 60
+  hasGrapple: 01000000
+  hasWeapon: 01000000
+--- !u!114 &836803528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 836803523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94dce614d845e494ba30fbcc8f4f32d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &937752621
 GameObject:
   m_ObjectHideFlags: 0
@@ -5601,7 +5678,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1819489639
 Transform:
   m_ObjectHideFlags: 0
@@ -6118,7 +6195,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2093447546}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -435.2, y: 220.6001, z: 0}
+  m_LocalPosition: {x: -467.2, y: 238.6001, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 278994404}
