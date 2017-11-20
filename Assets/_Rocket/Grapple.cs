@@ -7,7 +7,7 @@ public class Grapple : MonoBehaviour {
 
 	[SerializeField] Vector3 pickupConnectedAnchor;
 	
-	float pickupRadius;
+	SphereCollider grappleCollider;
 	public bool hasCargo = false;
 	
 	Rigidbody rigidbody;
@@ -18,7 +18,7 @@ public class Grapple : MonoBehaviour {
 
 	void Start () {
 		rigidbody = GetComponent<Rigidbody>();
-		pickupRadius = GetComponent<SphereCollider>().radius;	
+		grappleCollider = GetComponent<SphereCollider>();	
 		lineRenderer = GetComponent<LineRenderer>();
 	}
 
@@ -68,5 +68,9 @@ public class Grapple : MonoBehaviour {
 		else {
 			lineRenderer.enabled = false;
 		}
+	}
+
+	public void SetGrappleRadius (float anAmount) {
+		grappleCollider.radius = anAmount;
 	}
 }

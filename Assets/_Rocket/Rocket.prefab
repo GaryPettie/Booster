@@ -55,6 +55,8 @@ GameObject:
   - component: {fileID: 54728676922615578}
   - component: {fileID: 82086918019444682}
   - component: {fileID: 114744884764733960}
+  - component: {fileID: 114493627137475886}
+  - component: {fileID: 114617996068893250}
   m_Layer: 8
   m_Name: Rocket
   m_TagString: Player
@@ -76,7 +78,7 @@ GameObject:
   - component: {fileID: 120061630479882962}
   - component: {fileID: 114327987028539608}
   m_Layer: 12
-  m_Name: Grapple
+  m_Name: RocketGrapple
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -93,7 +95,7 @@ GameObject:
   - component: {fileID: 108393517883255980}
   - component: {fileID: 114998685013252514}
   m_Layer: 8
-  m_Name: Spotlight
+  m_Name: RocketSpotlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -345,9 +347,9 @@ Light:
   serializedVersion: 8
   m_Type: 0
   m_Color: {r: 1, g: 0.8834343, b: 0.43382353, a: 1}
-  m_Intensity: 3
-  m_Range: 25
-  m_SpotAngle: 45
+  m_Intensity: 1
+  m_Range: 10
+  m_SpotAngle: 15
   m_CookieSize: 10
   m_Shadows:
     m_Type: 0
@@ -384,6 +386,63 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickupConnectedAnchor: {x: 0, y: -5, z: 0}
   hasCargo: 0
+--- !u!114 &114493627137475886
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1492643889520646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0b3b959f4b3824a86f9df8a8f6360f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EngineThrustLevels:
+  - 2000
+  - 2500
+  - 3000
+  - 3500
+  TankSizeLevels:
+  - 50
+  - 100
+  - 150
+  - 200
+  ShieldLevels:
+  - 1
+  - 2
+  - 5
+  - 10
+  LightRangeLevels:
+  - 10
+  - 15
+  - 20
+  - 30
+  LightIntensityLevels:
+  - 1
+  - 2
+  - 3
+  - 4
+  LightAngleLevels:
+  - 15
+  - 30
+  - 45
+  - 60
+  grappleLevels:
+  - 2.5
+  - 5
+  - 10
+  - 15
+--- !u!114 &114617996068893250
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1492643889520646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94dce614d845e494ba30fbcc8f4f32d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114744884764733960
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -400,8 +459,8 @@ MonoBehaviour:
   maxFuel: 100
   fuelBurnMultiplier: 1
   maxHealth: 100
-  maxShield: 100
-  lives: 0
+  shieldMultiplier: 1
+  lives: 3
   engineAudio: {fileID: 8300000, guid: 3edb85de2355c4748bc8c2148503a4fa, type: 3}
   engineVolume: 0.25
   explosionAudio: {fileID: 8300000, guid: 81e2c9d1fd059dc4b8dbdcfe861f7538, type: 3}
@@ -409,6 +468,7 @@ MonoBehaviour:
   exhaustParticlesPrefab: {fileID: 198626962620368400, guid: 04e3d78303278f54e891dacf22d5f9b3,
     type: 2}
   exhaustOffset: {x: 0, y: -1.5, z: 0}
+  isTransitioning: 0
 --- !u!114 &114998685013252514
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -473,7 +533,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 2
-    widthMultiplier: 1
+    widthMultiplier: 0.5
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -544,6 +604,6 @@ FixedJoint:
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_EnableCollision: 0
-  m_EnablePreprocessing: 1
+  m_EnablePreprocessing: 0
   m_MassScale: 1
   m_ConnectedMassScale: 1
