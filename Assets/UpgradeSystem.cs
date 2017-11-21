@@ -22,15 +22,16 @@ public class UpgradeSystem : MonoBehaviour {
 	[SerializeField] float[] grappleLevels = { 2.5f, 5f, 10f, 15f };
 
 	[Header("Weapons:")]
+	//TODO implement weapon system.
 	//[SerializeField] float[] WeaponLevels = { 1f, 1.5f, 2f, 2.5f };
 
-	bool[] hasThrust = { true, false, false, false };
-	bool[] hasFuelTank = { true, false, false, false };
-	bool[] hasShield = { true, false, false, false };
-	bool[] hasLightStrength = { true, false, false, false };
-	bool[] hasLightAngle = { true, false, false, false };
-	bool[] hasGrapple = { true, false, false, false };
-	bool[] hasWeapon = { true, false, false, false };
+	bool[] hasThrust = { false, false, false, false };
+	bool[] hasFuelTank = { false, false, false, false };
+	bool[] hasShield = { false, false, false, false };
+	bool[] hasLightStrength = { false, false, false, false };
+	bool[] hasLightAngle = { false, false, false, false };
+	bool[] hasGrapple = { false, false, false, false };
+	bool[] hasWeapon = { false, false, false, false };
 
 	Rocket rocket;
 	Light spotlight;
@@ -40,6 +41,16 @@ public class UpgradeSystem : MonoBehaviour {
 		rocket = GetComponent<Rocket>();
 		spotlight = GameObject.Find("RocketSpotlight").GetComponent<Light>();
 		grapple = GetComponentInChildren<Grapple>();
+		InitialiseUpgrades();
+	}
+
+	public void InitialiseUpgrades () {
+		ThrustForce(0);
+		TankSize(0);
+		ShieldMultiplier(0);
+		LightStrength(0);
+		LightAngle(0);
+		GrappleRadius(0);
 	}
 
 
@@ -95,6 +106,7 @@ public class UpgradeSystem : MonoBehaviour {
 		for (int i = 0; i < hasGrapple.Length; i++) {
 			if (hasGrapple[i]) {
 				grapple.SetGrappleRadius(grappleLevels[index]);
+				grapple.RemoveDrawnGrappleRadius();
 			}
 		}
 	}

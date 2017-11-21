@@ -7,17 +7,20 @@ using UnityStandardAssets.CrossPlatformInput;
 public class InputControls : MonoBehaviour {
 
 	Rocket rocket;
+	Grapple grapple;
 	float vertical;
 	float horizontal;
 
 	void Start () {
 		rocket = GetComponent<Rocket>();
+		grapple = GetComponentInChildren<Grapple>();
 	}
 	
 	void FixedUpdate () {
 		if (!rocket.isTransitioning) {
 			RespondToThrust();
 			RespondToRotate();
+			ShowGrappleRadius();
 		}
 	}
 
@@ -43,6 +46,16 @@ public class InputControls : MonoBehaviour {
 			if (horizontal > 0f) {
 				rocket.ApplyRotation(-Vector3.forward);
 			}
+		}
+	}
+
+	//TODO Move grapple input here.
+	void ShowGrappleRadius () {
+		if (CrossPlatformInputManager.GetButtonDown("Fire3")) {
+			grapple.DrawGrappleRadius();
+		}
+		if (CrossPlatformInputManager.GetButtonUp("Fire3")) {
+			grapple.RemoveDrawnGrappleRadius();
 		}
 	}
 }
