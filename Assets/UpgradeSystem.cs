@@ -5,17 +5,18 @@ using UnityEngine;
 public class UpgradeSystem : MonoBehaviour {
 
 	[Header("Engine:")]
-	[SerializeField] float[] EngineThrustLevels = { 2000, 2500, 3000, 3500 };
+	[SerializeField] float[] engineThrustLevels = { 2000, 2500, 3000, 3500 };
+	[SerializeField] float[] fuelBurnMultiplier = { 1f, 1.25f, 1.5f, 1.75f };
 
-	[SerializeField] float[] TankSizeLevels = { 50, 100, 150, 200 };
+	[SerializeField] float[] tankSizeLevels = { 50, 100, 150, 200 };
 
 	[Header("Shield:")]
-	[SerializeField] float[] ShieldLevels = { 1f, 1.5f, 2f, 2.5f };
+	[SerializeField] float[] shieldLevels = { 1f, 1.5f, 2f, 2.5f };
 
 	[Header("Light:")]
-	[SerializeField] float[] LightRangeLevels = { 10, 15, 20, 30 };
-	[SerializeField] float[] LightIntensityLevels = { 1, 2, 3, 4 };
-	[SerializeField] float[] LightAngleLevels = { 15, 30, 45, 60 };
+	[SerializeField] float[] lightRangeLevels = { 10, 15, 20, 30 };
+	[SerializeField] float[] lightIntensityLevels = { 1, 2, 3, 4 };
+	[SerializeField] float[] lightAngleLevels = { 15, 30, 45, 60 };
 
 	[Header("Grapple:")]
 	[SerializeField] float[] grappleLevels = { 2.5f, 5f, 10f, 15f };
@@ -35,7 +36,6 @@ public class UpgradeSystem : MonoBehaviour {
 	Light spotlight;
 	Grapple grapple;
 
-	// Use this for initialization
 	void Start () {
 		rocket = GetComponent<Rocket>();
 		spotlight = GameObject.Find("RocketSpotlight").GetComponent<Light>();
@@ -43,32 +43,41 @@ public class UpgradeSystem : MonoBehaviour {
 	}
 
 
+	public float GetMaxFuel () {
+		return tankSizeLevels[tankSizeLevels.Length - 1];
+	}
+
 	public void ThrustForce (int index) {
 		hasThrust[index] = !hasThrust[index];
 		if (hasThrust[index]) {
-			rocket.SetThrustForce(EngineThrustLevels[index]);
+			rocket.SetThrustForce(engineThrustLevels[index]);
+			rocket.SetFuelBurnMultiplier(fuelBurnMultiplier[index]);
 		}
 	}
 
 	public void TankSize (int index) {
 		hasFuelTank[index] = !hasFuelTank[index];
 		if (hasFuelTank[index]) {
-			rocket.SetMaxFuel(TankSizeLevels[index]);
+			rocket.SetMaxFuel(tankSizeLevels[index]);
 		}
+	}
+
+	public bool[] GetShieldUnlocks () {
+		return hasShield;
 	}
 
 	public void ShieldMultiplier (int index) {
 		hasShield[index] = !hasShield[index];
 		if (hasShield[index]) {
-			rocket.SetShieldMultiplier(ShieldLevels[index]);
+			rocket.SetShieldMultiplier(shieldLevels[index]);
 		}
 	}
 
 	public void LightStrength (int index) {
 		hasLightStrength[index] = !hasLightStrength[index];
 		if (hasLightStrength[index]) {
-			spotlight.range = LightRangeLevels[index];
-			spotlight.intensity = LightIntensityLevels[index];
+			spotlight.range = lightRangeLevels[index];
+			spotlight.intensity = lightIntensityLevels[index];
 		}
 	}
 
@@ -76,7 +85,7 @@ public class UpgradeSystem : MonoBehaviour {
 		hasLightAngle[index] = !hasLightAngle[index];
 		for (int i = 0; i < hasLightAngle.Length; i++) {
 			if (hasLightAngle[i]) {
-				spotlight.spotAngle = LightAngleLevels[i];
+				spotlight.spotAngle = lightAngleLevels[i];
 			}
 		}
 	}

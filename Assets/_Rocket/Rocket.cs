@@ -92,7 +92,11 @@ public class Rocket : MonoBehaviour, IDamageable {
 	public void SetThrustForce (float anAmount) {
 		thrustForce = anAmount;
 	}
-	
+
+	public void SetFuelBurnMultiplier (float multiplier) {
+		fuelBurnMultiplier = multiplier;
+	}
+
 	public void AddFuel (float anAmount) {
 		currentFuel = Mathf.Clamp(currentFuel + anAmount, 0, maxFuel);
 	}
@@ -114,6 +118,15 @@ public class Rocket : MonoBehaviour, IDamageable {
 
 
 	#region Damage
+	public float GetCurrentHealth () {
+		return currentHealth;
+	}
+
+	public float GetMaxHealth () {
+		return maxHealth;
+	}
+
+
 	public void SetShieldMultiplier (float anAmount) {
 		shieldMultiplier = anAmount;
 	}
